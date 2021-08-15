@@ -1,0 +1,11 @@
+# Editor related
+.vscode
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# OS related
+.DS_Store
+
+# Optimized / DLL files
+__pycache__/

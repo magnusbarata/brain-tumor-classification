@@ -1,0 +1,7 @@
+imageio==2.9.0
+jupyter
+matplotlib==3.3.2
+nibabel==3.2.1
+pandas==1.1.4
+pydicom==2.1.0
+scikit-learn==0.23.2
