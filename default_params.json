@@ -1,0 +1,19 @@
+{
+  "name": "Sample hyperparameter",
+  "seed": 7171,
+  "data": {
+    "dirname": "data",
+    "val_size": 0.2,
+    "batch_size": 16,
+    "volume_size": [128, 128, 64],
+    "seq_type": "T1w"
+  },
+  "model": {"name": "baseline"},
+  "train": {
+    "lr": 1e-4,
+    "decay_steps": 100000,
+    "decay_rate": 0.96,
+    "epoch": 100
+  },
+  "desc": "Sample hyperparameter file"
+}

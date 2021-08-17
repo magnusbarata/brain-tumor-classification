@@ -9,3 +9,9 @@
 
 # Optimized / DLL files
 __pycache__/
+
+# Project related
+data/*
+!data/.gitkeep
+exps/*
+!exps/.gitkeep
