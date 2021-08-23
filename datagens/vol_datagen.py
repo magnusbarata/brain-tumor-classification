@@ -1,4 +1,5 @@
 import glob
+import re
 import tensorflow as tf
 import numpy as np
 from scipy.ndimage import zoom
@@ -13,6 +14,8 @@ class VolumeDatagen(BaseDatagen):
       labels: List of label for each file. The labels must be integer.
       volume_size: Tuple of `(height, width, depth)` integer representing the size of the volume 
         which will be passed to the model.
+      seq_type: Sequence type. Either `FLAIR`, `T1w`, `T1wCE`, or `T2w`.
+      datadir: Root of data directory.
       dtype: String, data type of the volume.
     """
     def __init__(self, samples,
@@ -25,6 +28,7 @@ class VolumeDatagen(BaseDatagen):
         super(VolumeDatagen, self).__init__(samples, **kwargs)
         self.labels = labels
         self.n_class = 0 if labels is None else len(np.unique(labels))
+        self.mode = 'test' if labels is None else 'train'
         self.volume_size = volume_size
         self.seq_type = seq_type
         self.datadir = datadir
@@ -65,7 +69,10 @@ class VolumeDatagen(BaseDatagen):
           Volume array with shape `(height, width, depth, channel)` after resize.
         """
         # Stacking slices depthwise
-        files = sorted(glob.glob(f'{self.datadir}/train/{case_id}/{self.seq_type}/*.dcm'))
+        files = sorted(
+            glob.glob(f'{self.datadir}/{self.mode}/{case_id}/{self.seq_type}/*.dcm'),
+            key=lambda path: int(re.sub('\D', '', path))
+        )
         vol = np.stack([self.get_dcm_arr(f) for f in files], axis=-1).astype(self.dtype)
         
         # Resize volume
