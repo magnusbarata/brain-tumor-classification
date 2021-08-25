@@ -1,5 +1,7 @@
 import glob
 import re
+import os
+
 import tensorflow as tf
 import numpy as np
 from scipy.ndimage import zoom
@@ -68,14 +70,18 @@ class VolumeDatagen(BaseDatagen):
         Returns:
           Volume array with shape `(height, width, depth, channel)` after resize.
         """
-        # Stacking slices depthwise
-        files = sorted(
-            glob.glob(f'{self.datadir}/{self.mode}/{case_id}/{self.seq_type}/*.dcm'),
-            key=lambda path: int(re.sub('\D', '', path))
-        )
-        vol = np.stack([self.get_dcm_arr(f) for f in files], axis=-1).astype(self.dtype)
+        vol_dir = f'{self.datadir}/{self.mode}/{case_id}/{self.seq_type}'
+        if os.path.isdir(vol_dir):
+            # Stacking slices depthwise
+            files = sorted(
+                glob.glob(f'{vol_dir}/*.dcm'),
+                key=lambda path: int(re.sub('\D', '', os.path.basename(path)))
+            )
+            vol = np.stack([self.get_dcm_arr(f) for f in files], axis=-1)
+        else:
+            vol = np.load(f'{vol_dir}.npy')
         
         # Resize volume
         zoom_factor = [self.volume_size[i]/vol.shape[i] for i in range(vol.ndim)]
         vol = zoom(vol, zoom_factor, order=1)
-        return np.expand_dims(vol, -1)
+        return np.expand_dims(vol, -1).astype(self.dtype)
