@@ -4,7 +4,7 @@ import os
 
 import tensorflow as tf
 import numpy as np
-from scipy.ndimage import zoom
+from skimage.transform import resize
 
 from datagens import BaseDatagen
 
@@ -80,8 +80,8 @@ class VolumeDatagen(BaseDatagen):
             vol = np.stack([self.get_dcm_arr(f) for f in files], axis=-1)
         else:
             vol = np.load(f'{vol_dir}.npy')
-        
+        vol = np.expand_dims(vol, -1)
+
         # Resize volume
-        zoom_factor = [self.volume_size[i]/vol.shape[i] for i in range(vol.ndim)]
-        vol = zoom(vol, zoom_factor, order=1)
-        return np.expand_dims(vol, -1).astype(self.dtype)
+        vol = resize(vol, self.volume_size, order=1, mode='constant', anti_aliasing=True)
+        return vol.astype(self.dtype)
