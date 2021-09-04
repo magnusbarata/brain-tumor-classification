@@ -82,6 +82,4 @@ class VolumeDatagen(BaseDatagen):
             vol = np.load(f'{vol_dir}.npy')
         vol = np.expand_dims(vol, -1)
 
-        # Resize volume
-        vol = resize(vol, self.volume_size, order=1, mode='constant', anti_aliasing=True)
         return vol.astype(self.dtype)
