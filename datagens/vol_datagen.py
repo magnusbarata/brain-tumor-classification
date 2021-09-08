@@ -1,7 +1,10 @@
 import glob
+import re
+import os
+
 import tensorflow as tf
 import numpy as np
-from scipy.ndimage import zoom
+from skimage.transform import resize
 
 from datagens import BaseDatagen
 
@@ -13,6 +16,9 @@ class VolumeDatagen(BaseDatagen):
       labels: List of label for each file. The labels must be integer.
       volume_size: Tuple of `(height, width, depth)` integer representing the size of the volume 
         which will be passed to the model.
+      seq_type: Sequence type. Either `FLAIR`, `T1w`, `T1wCE`, `T2w`, or `ALL`.
+        If `ALL`, then all sequence types will be appended into the channel.
+      datadir: Root of data directory.
       dtype: String, data type of the volume.
     """
     def __init__(self, samples,
@@ -25,6 +31,7 @@ class VolumeDatagen(BaseDatagen):
         super(VolumeDatagen, self).__init__(samples, **kwargs)
         self.labels = labels
         self.n_class = 0 if labels is None else len(np.unique(labels))
+        self.mode = 'test' if labels is None else 'train'
         self.volume_size = volume_size
         self.seq_type = seq_type
         self.datadir = datadir
@@ -64,11 +71,26 @@ class VolumeDatagen(BaseDatagen):
         Returns:
           Volume array with shape `(height, width, depth, channel)` after resize.
         """
-        # Stacking slices depthwise
-        files = sorted(glob.glob(f'{self.datadir}/train/{case_id}/{self.seq_type}/*.dcm'))
-        vol = np.stack([self.get_dcm_arr(f) for f in files], axis=-1).astype(self.dtype)
+        if self.seq_type == 'ALL':
+            seq_types = ['FLAIR', 'T1w', 'T1wCE', 'T2w']
+        else:
+            seq_types = [self.seq_type]
         
-        # Resize volume
-        zoom_factor = [self.volume_size[i]/vol.shape[i] for i in range(vol.ndim)]
-        vol = zoom(vol, zoom_factor, order=1)
-        return np.expand_dims(vol, -1)
+        vol = np.empty((*self.volume_size, len(seq_types)))
+        for channel, seq_type in enumerate(seq_types):
+            vol_dir = f'{self.datadir}/{self.mode}/{case_id}/{seq_type}'
+            if os.path.isdir(vol_dir):
+                # Stacking slices depthwise
+                files = sorted(
+                    glob.glob(f'{vol_dir}/*.dcm'),
+                    key=lambda path: int(re.sub('\D', '', os.path.basename(path)))
+                )
+                s_vol = np.stack([self.get_dcm_arr(f) for f in files], axis=-1)
+            else:
+                s_vol = np.load(f'{vol_dir}.npy')
+
+            # Resize volume
+            vol[:,:,:,channel] = resize(
+                s_vol, self.volume_size, order=1, mode='constant', anti_aliasing=True
+            )
+        return vol.astype(self.dtype)

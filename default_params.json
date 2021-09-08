@@ -1,12 +1,12 @@
 {
-  "name": "Sample hyperparameter",
+  "name": "Baseline channel ensemble 256",
   "seed": 7171,
   "data": {
-    "dirname": "data",
+    "dirname": "data/orig",
     "val_size": 0.2,
-    "batch_size": 16,
-    "volume_size": [128, 128, 64],
-    "seq_type": "T1w"
+    "batch_size": 4,
+    "volume_size": [256, 256, 64],
+    "seq_type": "ALL"
   },
   "model": {"name": "baseline"},
   "train": {
@@ -15,5 +15,5 @@
     "decay_rate": 0.96,
     "epoch": 100
   },
-  "desc": "Sample hyperparameter file"
+  "desc": "Baseline channel ensemble experiment with 256x256x64 voxel size."
 }
