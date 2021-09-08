@@ -68,20 +68,22 @@ def train(exp_dir, params, datagen_tr, datagen_val):
 
 def main(args):
     params = utils.Hyperparams(args.settings)
-    if params.seq_type == 'ALL':
+    if params.ensemble:
         seq_types = ['FLAIR', 'T1w', 'T1wCE', 'T2w']
     else:
-        seq_types = [params.seq_type]
+        seq_types = [params.data.seq_type]
     
     for seq_type in seq_types:
         print(f'==========  Training {seq_type}  ==========')
         utils.set_seed(params.seed)
         params.data.seq_type = seq_type
         exp_dir = args.exp_dir
-        if params.seq_type == 'ALL':
+        if params.ensemble:
             exp_dir += f'/{seq_type}'
         datagen_tr, datagen_val = data_prep(params.data, params.seed)
         train(exp_dir, params, datagen_tr, datagen_val)
+    
+    if params.ensemble:
         del params.data.seq_type
     params._save(f'{args.exp_dir}/train_params.json')
 

@@ -16,7 +16,8 @@ class VolumeDatagen(BaseDatagen):
       labels: List of label for each file. The labels must be integer.
       volume_size: Tuple of `(height, width, depth)` integer representing the size of the volume 
         which will be passed to the model.
-      seq_type: Sequence type. Either `FLAIR`, `T1w`, `T1wCE`, or `T2w`.
+      seq_type: Sequence type. Either `FLAIR`, `T1w`, `T1wCE`, `T2w`, or `ALL`.
+        If `ALL`, then all sequence types will be appended into the channel.
       datadir: Root of data directory.
       dtype: String, data type of the volume.
     """
@@ -70,16 +71,26 @@ class VolumeDatagen(BaseDatagen):
         Returns:
           Volume array with shape `(height, width, depth, channel)` after resize.
         """
-        vol_dir = f'{self.datadir}/{self.mode}/{case_id}/{self.seq_type}'
-        if os.path.isdir(vol_dir):
-            # Stacking slices depthwise
-            files = sorted(
-                glob.glob(f'{vol_dir}/*.dcm'),
-                key=lambda path: int(re.sub('\D', '', os.path.basename(path)))
-            )
-            vol = np.stack([self.get_dcm_arr(f) for f in files], axis=-1)
+        if self.seq_type == 'ALL':
+            seq_types = ['FLAIR', 'T1w', 'T1wCE', 'T2w']
         else:
-            vol = np.load(f'{vol_dir}.npy')
-        vol = np.expand_dims(vol, -1)
+            seq_types = [self.seq_type]
+        
+        vol = np.empty((*self.volume_size, len(seq_types)))
+        for channel, seq_type in enumerate(seq_types):
+            vol_dir = f'{self.datadir}/{self.mode}/{case_id}/{seq_type}'
+            if os.path.isdir(vol_dir):
+                # Stacking slices depthwise
+                files = sorted(
+                    glob.glob(f'{vol_dir}/*.dcm'),
+                    key=lambda path: int(re.sub('\D', '', os.path.basename(path)))
+                )
+                s_vol = np.stack([self.get_dcm_arr(f) for f in files], axis=-1)
+            else:
+                s_vol = np.load(f'{vol_dir}.npy')
 
+            # Resize volume
+            vol[:,:,:,channel] = resize(
+                s_vol, self.volume_size, order=1, mode='constant', anti_aliasing=True
+            )
         return vol.astype(self.dtype)
