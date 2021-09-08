@@ -1,19 +1,19 @@
 {
-  "name": "Baseline normalized 64",
+  "name": "Baseline 256-v2",
   "seed": 7171,
   "ensemble": true,
   "data": {
-    "dirname": "data/nor/voxel-64",
+    "dirname": "data/orig",
     "val_size": 0.2,
-    "batch_size": 76,
-    "volume_size": [64, 64, 64]
+    "batch_size": 4,
+    "volume_size": [256, 256, 64]
   },
   "model": {"name": "baseline"},
   "train": {
     "lr": 1e-4,
-    "decay_steps": 1000,
+    "decay_steps": 100000,
     "decay_rate": 0.96,
     "epoch": 100
   },
-  "desc": "Baseline ensemble experiment with normalized 64x64x64 voxel size."
+  "desc": "Baseline ensemble experiment with 256x256x64 voxel size, version 2."
 }
