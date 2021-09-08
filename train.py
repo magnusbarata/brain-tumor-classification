@@ -5,6 +5,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from datagens.vol_datagen import VolumeDatagen
+from datagens.img_datagen import ImageDatagen
 from models import find_model
 import utils
 keras.backend.clear_session()
@@ -22,20 +23,37 @@ def main(args):
     X, y = df.index, df.MGMT_value.values   
     X_tr, X_val, y_tr, y_val = train_test_split(
         X, y, stratify=y, test_size=params.data.val_size, random_state=params.seed)
-    datagen_tr = VolumeDatagen(
-        X_tr, y_tr,
-        batch_size=params.data.batch_size,
-        volume_size=params.data.volume_size,
-        seq_type=params.data.seq_type,
-        datadir=params.data.dirname
-    )
-    datagen_val = VolumeDatagen(
-        X_val, y_val,
-        batch_size=params.data.batch_size,
-        volume_size=params.data.volume_size,
-        seq_type=params.data.seq_type,
-        datadir=params.data.dirname
-    )
+
+    if params.modal == '2d':      
+        datagen_tr = ImageDatagen(
+            X_tr, y_tr,
+            batch_size=params.data.batch_size,
+            image_size=params.data.image_size,
+            seq_type=params.data.seq_type,
+            datadir=params.data.dirname
+        )
+        datagen_val = ImageDatagen(
+            X_val, y_val,
+            batch_size=params.data.batch_size,
+            image_size=params.data.image_size,
+            seq_type=params.data.seq_type,
+            datadir=params.data.dirname
+        )
+    else:
+        datagen_tr = VolumeDatagen(
+            X_tr, y_tr,
+            batch_size=params.data.batch_size,
+            volume_size=params.data.volume_size,
+            seq_type=params.data.seq_type,
+            datadir=params.data.dirname
+        )
+        datagen_val = VolumeDatagen(
+            X_val, y_val,
+            batch_size=params.data.batch_size,
+            volume_size=params.data.volume_size,
+            seq_type=params.data.seq_type,
+            datadir=params.data.dirname
+        )
 
     ## Training
     if utils.continue_training(args.exp_dir):

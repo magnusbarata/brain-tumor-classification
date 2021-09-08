@@ -1,3 +1,4 @@
+import glob
 import tensorflow as tf
 import numpy as np
 from datagens import BaseDatagen
@@ -16,6 +17,8 @@ class ImageDatagen(BaseDatagen):
     def __init__(self, samples,
                  labels=None,
                  image_size=(256,256),
+                 seq_type='T1w',
+                 datadir='/data',
                  dtype='float32',
                  aug_fns=None,
                  **kwargs):
@@ -23,11 +26,15 @@ class ImageDatagen(BaseDatagen):
         self.labels = labels
         self.n_class = 0 if labels is None else len(np.unique(labels))
         self.image_size = image_size
+        self.seq_type = seq_type
+        self.datadir = datadir
         self.dtype = dtype
         if aug_fns:
             assert isinstance(aug_fns, list), 'aug_fns must be a list of functions.'
         self.aug_fns = aug_fns
+        self._convert_2d_dataset()
         self._set_shape()
+        self.on_epoch_end()
 
     def _set_shape(self):
         """Deduce the shape of the generated batch"""
@@ -38,6 +45,15 @@ class ImageDatagen(BaseDatagen):
         else:
             self.x_shape = (None, *item[0].shape[1:])
             self.y_shape = (None, self.n_class)
+            
+    def _convert_2d_dataset(self):
+        new_samples = []
+        new_labels = []
+        for case_id,mgmt in zip (self.samples, self.labels):
+            files = sorted(glob.glob(f'{self.datadir}/train/{case_id}/{self.seq_type}/*.dcm'))
+            new_samples.extend(files)
+            new_labels.extend([mgmt] * len(files))
+        self.samples, self.labels = np.array(new_samples), np.array(new_labels)
 
     def to_dataset(self):
         """Convert generator to `tf.data`"""
