@@ -89,8 +89,5 @@ class VolumeDatagen(BaseDatagen):
             else:
                 s_vol = np.load(f'{vol_dir}.npy')
 
-            # Resize volume
-            vol[:,:,:,channel] = resize(
-                s_vol, self.volume_size, order=1, mode='constant', anti_aliasing=True
-            )
+            vol[:,:,:,channel] = s_vol
         return vol.astype(self.dtype)
