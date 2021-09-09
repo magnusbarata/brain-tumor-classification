@@ -81,16 +81,24 @@ class BaseDatagen(keras.utils.Sequence):
         return imageio.imread(fname)
 
     @staticmethod
-    def get_dcm_arr(fname):
+    def get_dcm_arr(fname, use_voi_lut=False):
         """Static method to read dicom image.
 
-        The pixel values of the image are converted into Hounsfield Unit (HU).
+        The pixel values are converted using modality lut so that the pixel values are
+        manufacturer-independent.
         
+        Args:
+          fname: DICOM filename.
+          use_voi_lut: Apply the VOI LUT if `True`. Default to `False`.
+
         Returns:
           ndarray representations of a dicom image.
         """
         ds = dcm.dcmread(fname)
-        return ds.pixel_array * ds.RescaleSlope + ds.RescaleIntercept
+        arr = dcm.pixel_data_handlers.apply_modality_lut(ds.pixel_array, ds)
+        if use_voi_lut:
+            arr = dcm.pixel_data_handlers.apply_voi_lut(arr, ds)
+        return arr
 
     @staticmethod
     def get_nii_arr(fname):
