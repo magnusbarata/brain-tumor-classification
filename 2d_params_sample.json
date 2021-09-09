@@ -1,9 +1,9 @@
 {
   "name": "2D Sample hyperparameter",
   "seed": 7171,
-  "modal": "2d",
   "data": {
-      "dirname": "data",
+      "modal": "2d",
+      "dirname": "data/orig",
       "val_size": 0.2,
       "batch_size": 32,
       "image_size": [256, 256],
