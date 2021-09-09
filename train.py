@@ -21,7 +21,7 @@ def data_prep(params_data, seed):
         X, y, stratify=y, test_size=params_data.val_size, random_state=seed
     )
 
-    if params.modal == '2d':      
+    if params_data.modal == '2d':      
         datagen_tr = ImageDatagen(
             X_tr, y_tr,
             batch_size=params_data.batch_size,
