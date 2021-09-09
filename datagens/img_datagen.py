@@ -25,6 +25,7 @@ class ImageDatagen(BaseDatagen):
         super(ImageDatagen, self).__init__(samples, **kwargs)
         self.labels = labels
         self.n_class = 0 if labels is None else len(np.unique(labels))
+        self.mode = 'test' if labels is None else 'train'
         self.image_size = image_size
         self.seq_type = seq_type
         self.datadir = datadir
@@ -47,10 +48,11 @@ class ImageDatagen(BaseDatagen):
             self.y_shape = (None, self.n_class)
             
     def _convert_2d_dataset(self):
+        """Convert case ID to filenames, labels"""
         new_samples = []
         new_labels = []
-        for case_id,mgmt in zip (self.samples, self.labels):
-            files = sorted(glob.glob(f'{self.datadir}/train/{case_id}/{self.seq_type}/*.dcm'))
+        for case_id,mgmt in zip(self.samples, self.labels):
+            files = glob.glob(f'{self.datadir}/{self.mode}/{case_id}/{self.seq_type}/*.dcm')
             new_samples.extend(files)
             new_labels.extend([mgmt] * len(files))
         self.samples, self.labels = np.array(new_samples), np.array(new_labels)
