@@ -50,12 +50,18 @@ class ImageDatagen(BaseDatagen):
     def _convert_2d_dataset(self):
         """Convert case ID to filenames, labels"""
         new_samples = []
-        new_labels = []
-        for case_id,mgmt in zip(self.samples, self.labels):
-            files = glob.glob(f'{self.datadir}/{self.mode}/{case_id}/{self.seq_type}/*.dcm')
-            new_samples.extend(files)
-            new_labels.extend([mgmt] * len(files))
-        self.samples, self.labels = np.array(new_samples), np.array(new_labels)
+        if self.labels is None:
+            for case_id in self.samples:
+                files = glob.glob(f'{self.datadir}/{self.mode}/{case_id}/{self.seq_type}/*.dcm')
+                new_samples.extend(files)
+            self.samples = np.array(new_samples)
+        else:
+            new_labels = []
+            for case_id,mgmt in zip(self.samples, self.labels):
+                files = glob.glob(f'{self.datadir}/{self.mode}/{case_id}/{self.seq_type}/*.dcm')
+                new_samples.extend(files)
+                new_labels.extend([mgmt] * len(files))
+            self.samples, self.labels = np.array(new_samples), np.array(new_labels)
 
     def to_dataset(self):
         """Convert generator to `tf.data`"""
