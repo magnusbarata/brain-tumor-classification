@@ -9,7 +9,7 @@
       "image_size": [256, 256],
       "seq_type": "T1w"
   },
-  "model": {"name": "baseline_2d"},
+  "model": {"name": "baseline"},
   "train": {
     "lr": 1e-4,
     "decay_steps": 100000,

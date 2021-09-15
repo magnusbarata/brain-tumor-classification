@@ -3,7 +3,6 @@ import sys
 
 # Import exposed model functions
 from models.baseline import baseline
-from models.baseline_2d import baseline_2d
 
 def find_model(model_name):
     """Import a model using model name"""
