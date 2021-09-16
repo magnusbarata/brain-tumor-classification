@@ -13,7 +13,9 @@ class VolumeDatagen(BaseDatagen):
 
     Args:
       samples: List of filenames.
-      labels: List of label for each file. The labels must be integer.
+      labels: Numpy arrays of label for each file. The labels must be integer.
+        If not provided, default to `None`, which generate data without labels
+        (useful for testing).
       volume_size: Tuple of `(height, width, depth)` integer representing the size of the volume 
         which will be passed to the model.
       seq_type: Sequence type. Either `FLAIR`, `T1w`, `T1wCE`, `T2w`, or `ALL`.
