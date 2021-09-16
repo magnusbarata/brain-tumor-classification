@@ -1,11 +1,11 @@
 {
-  "name": "Ensemble Learning 256",
+  "name": "Ensemble Learning 128",
   "seed": 7171,
   "data": {
     "dirname": "data/orig",
     "val_size": 0.2,
-    "batch_size": 1,
-    "volume_size": [256, 256, 64],
+    "batch_size": 7,
+    "volume_size": [128, 128, 64],
     "seq_type": "ALL"
   },
   "model": {"name": "ensemble_model"},
@@ -15,5 +15,5 @@
     "decay_rate": 0.96,
     "epoch": 100
   },
-  "desc": "Ensemble learning experiment with 256x256x64 voxel size, without aux out."
+  "desc": "Ensemble learning experiment with 128x128x64 voxel size, without aux out."
 }
