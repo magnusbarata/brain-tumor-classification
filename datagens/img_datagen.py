@@ -7,10 +7,12 @@ class ImageDatagen(BaseDatagen):
     """2D image data generator class.
 
     Args:
-      samples: List of filenames.
-      labels: List of label for each file. The labels must be integer.
+      samples: List of case ID.
+      labels: List of label for each case ID. The labels must be integer.
       image_size: Tuple of `(height, width)` integer representing the size of the image 
         which will be passed to the model.
+      seq_type: Sequence type. Either `FLAIR`, `T1w`, `T1wCE`, or `T2w`.
+      datadir: Root of data directory.
       dtype: String, data type of the image.
       aug_fns: List of functions to be applied on the image for data augmentation.
     """
