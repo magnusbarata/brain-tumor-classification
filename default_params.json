@@ -7,7 +7,7 @@
       "val_size": 0.2,
       "batch_size": 32,
       "image_size": [256, 256],
-      "seq_type": "T1w"
+      "seq_type": "FLAIR"
   },
   "model": {"name": "baseline"},
   "train": {
