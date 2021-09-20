@@ -59,7 +59,9 @@ def train(exp_dir, params, datagen_tr, datagen_val):
     if utils.continue_training(exp_dir):
         pass # TODO
     else:
-        model = find_model(params.model.name)(datagen_tr.x_shape[1:], datagen_tr.n_class)
+        model = find_model(params.model.name)(
+            datagen_tr.x_shape[1:], datagen_tr.n_class, **params.model
+        )
         lr_schedule = keras.optimizers.schedules.ExponentialDecay(
             params.train.lr, 
             decay_steps=params.train.decay_steps,
@@ -69,10 +71,11 @@ def train(exp_dir, params, datagen_tr, datagen_val):
         optimizer = keras.optimizers.Adam(learning_rate=lr_schedule)
         model.compile(loss="categorical_crossentropy", optimizer=optimizer, metrics=['accuracy'])
     
-    chkpt_best = keras.callbacks.ModelCheckpoint(f'{exp_dir}/model_best.h5', monitor='val_accuracy', save_best_only=True)
+    val_acc = 'val_pred_accuracy' if params.model.use_aux else 'val_accuracy'
+    chkpt_best = keras.callbacks.ModelCheckpoint(f'{exp_dir}/model_best.h5', monitor=val_acc, save_best_only=True)
     chkpt_latest = keras.callbacks.ModelCheckpoint(f'{exp_dir}/model_latest.h5', monitor='loss')
     tensorboard = keras.callbacks.TensorBoard(log_dir=f'{exp_dir}/logs', histogram_freq=1)
-    stopper = keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=15)
+    stopper = keras.callbacks.EarlyStopping(monitor=val_acc, patience=15)
     model.fit(
         datagen_tr,
         validation_data=datagen_val,
