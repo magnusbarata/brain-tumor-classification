@@ -49,18 +49,29 @@ class ImageDatagen(BaseDatagen):
             self.x_shape = (None, *item[0].shape[1:])
             self.y_shape = (None, self.n_class)
             
+    def _remove_empty_slices(self,files):
+        """Remove empty slices from filenames."""
+        new_files = []
+        for file in files:
+            img = self.get_dcm_arr(file)
+            if not np.all(img == 0):
+                new_files.append(file)
+        return new_files
+            
     def _convert_2d_dataset(self):
         """Convert case ID to filenames, labels"""
         new_samples = []
         if self.labels is None:
             for case_id in self.samples:
                 files = glob.glob(f'{self.datadir}/{self.mode}/{case_id}/{self.seq_type}/*.dcm')
+                files = self._remove_empty_slices(files)
                 new_samples.extend(files)
             self.samples = np.array(new_samples)
         else:
             new_labels = []
             for case_id,mgmt in zip(self.samples, self.labels):
                 files = glob.glob(f'{self.datadir}/{self.mode}/{case_id}/{self.seq_type}/*.dcm')
+                files = self._remove_empty_slices(files)
                 new_samples.extend(files)
                 new_labels.extend([mgmt] * len(files))
             self.samples, self.labels = np.array(new_samples), np.array(new_labels)
