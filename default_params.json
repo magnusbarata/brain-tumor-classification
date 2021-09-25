@@ -1,13 +1,13 @@
 {
   "name": "2D Sample hyperparameter",
   "seed": 7171,
+  "ensemble": true,
   "data": {
       "modal": "2d",
       "dirname": "data/orig",
       "val_size": 0.2,
       "batch_size": 32,
-      "image_size": [256, 256],
-      "seq_type": "T1wCE"
+      "image_size": [256, 256]
   },
   "model": {"name": "baseline"},
   "train": {
