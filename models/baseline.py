@@ -1,6 +1,6 @@
 from tensorflow import keras
 
-def baseline(input_shape, n_class=2, **kwargs):
+def baseline(input_shape, n_class=2, n_filters=64, **kwargs):
     """Baseline model from the paper https://arxiv.org/abs/2007.13224"""
     if len(input_shape) == 4:
         conv_layer = keras.layers.Conv3D
@@ -17,19 +17,19 @@ def baseline(input_shape, n_class=2, **kwargs):
 
     inputs = keras.Input(input_shape)
 
-    x = conv_layer(filters=64, kernel_size=3, activation='relu')(inputs)
+    x = conv_layer(n_filters, kernel_size=3, activation='relu')(inputs)
     x = pool_layer(pool_size=2)(x)
     x = keras.layers.BatchNormalization()(x)
 
-    x = conv_layer(filters=64, kernel_size=3, activation='relu')(x)
+    x = conv_layer(n_filters, kernel_size=3, activation='relu')(x)
     x = pool_layer(pool_size=2)(x)
     x = keras.layers.BatchNormalization()(x)
 
-    x = conv_layer(filters=128, kernel_size=3, activation='relu')(x)
+    x = conv_layer(2 * n_filters, kernel_size=3, activation='relu')(x)
     x = pool_layer(pool_size=2)(x)
     x = keras.layers.BatchNormalization()(x)
 
-    x = conv_layer(filters=256, kernel_size=3, activation='relu')(x)
+    x = conv_layer(4 * n_filters, kernel_size=3, activation='relu')(x)
     x = pool_layer(pool_size=2)(x)
     x = keras.layers.BatchNormalization()(x)
 
