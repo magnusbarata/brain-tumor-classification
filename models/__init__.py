@@ -8,5 +8,5 @@ def find_model(model_name):
 
 
 # Import exposed model functions
-from models.baseline import baseline
+from models.baseline import baseline, baseline_v2
 from models.ensemble import ensemble_model
