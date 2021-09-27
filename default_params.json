@@ -1,22 +1,21 @@
 {
-  "name": "Ensemble Learning 256 with aux",
+  "name": "Baseline v2 256",
   "seed": 7171,
+  "ensemble": true,
   "data": {
     "dirname": "data/orig",
     "val_size": 0.2,
-    "batch_size": 1,
-    "volume_size": [256, 256, 64],
-    "seq_type": "ALL"
+    "batch_size": 4,
+    "volume_size": [256, 256, 64]
   },
   "model": {
-    "name": "ensemble_model",
-    "use_aux": true
+    "name": "baseline_v2"
   },
   "train": {
     "lr": 1e-4,
-    "decay_steps": 1000,
+    "decay_steps": 100000,
     "decay_rate": 0.96,
     "epoch": 100
   },
-  "desc": "Ensemble learning experiment with 256x256x64 voxel size, with aux out."
+  "desc": "Baseline V2 ensemble experiment with 256x256x64 voxel size."
 }
