@@ -2,7 +2,7 @@ from tensorflow import keras
 import efficientnet_3D.tfkeras as efn
 
 def efficientnet(input_shape, n_class=2, n_filters=64, **kwargs):
-    """Baseline model from the paper https://arxiv.org/abs/2007.13224"""
+    """EfficientNet model from the paper https://arxiv.org/abs/1905.11946"""
     if len(input_shape) == 4:
         effnet_layer = efn.EfficientNetB0(
             include_top=True,
