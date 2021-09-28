@@ -9,4 +9,5 @@ def find_model(model_name):
 
 # Import exposed model functions
 from models.baseline import baseline
+from models.efficientnet import efficientnet
 from models.ensemble import ensemble_model
