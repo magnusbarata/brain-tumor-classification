@@ -1,15 +1,15 @@
 {
-  "name": "Ensemble Learning 256 with aux",
+  "name": "EfficientNet 3D 256 with aux",
   "seed": 7171,
   "data": {
     "dirname": "data/orig",
     "val_size": 0.2,
     "batch_size": 1,
     "volume_size": [256, 256, 64],
-    "seq_type": "ALL"
+    "seq_type": "FLAIR"
   },
   "model": {
-    "name": "ensemble_model",
+    "name": "efficientnet",
     "use_aux": true
   },
   "train": {
@@ -18,5 +18,5 @@
     "decay_rate": 0.96,
     "epoch": 100
   },
-  "desc": "Ensemble learning experiment with 256x256x64 voxel size, with aux out."
+  "desc": "EfficientNet 3D experiment with 256x256x64 voxel size, with aux out."
 }
