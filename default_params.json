@@ -1,5 +1,5 @@
 {
-  "name": "2D Sample hyperparameter",
+  "name": "2D 512x512 hyperparameter",
   "seed": 7171,
   "ensemble": true,
   "data": {
@@ -7,7 +7,7 @@
       "dirname": "data/orig",
       "val_size": 0.2,
       "batch_size": 32,
-      "image_size": [256, 256]
+      "image_size": [512, 512]
   },
   "model": {"name": "baseline"},
   "train": {
