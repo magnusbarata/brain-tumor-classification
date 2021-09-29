@@ -1,22 +1,22 @@
 {
-  "name": "EfficientNet 3D 256 with aux",
+  "name": "EfficientNetB0 3D 256",
   "seed": 7171,
+  "ensemble": true,
   "data": {
     "dirname": "data/orig",
     "val_size": 0.2,
     "batch_size": 1,
-    "volume_size": [256, 256, 64],
-    "seq_type": "FLAIR"
+    "volume_size": [256, 256, 64]
   },
   "model": {
     "name": "efficientnet",
-    "use_aux": true
+    "variant": "B0"
   },
   "train": {
     "lr": 1e-4,
-    "decay_steps": 1000,
+    "decay_steps": 100000,
     "decay_rate": 0.96,
     "epoch": 100
   },
-  "desc": "EfficientNet 3D experiment with 256x256x64 voxel size, with aux out."
+  "desc": "EfficientNetB0 3D experiment with 256x256x64 voxel size."
 }
