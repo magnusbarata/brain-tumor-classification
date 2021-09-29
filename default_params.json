@@ -1,6 +1,7 @@
 {
   "name": "Ensemble Learning 256 with aux",
   "seed": 7171,
+  "ensemble": true,
   "data": {
     "dirname": "data/orig",
     "val_size": 0.2,

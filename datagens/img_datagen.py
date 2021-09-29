@@ -18,7 +18,7 @@ class ImageDatagen(BaseDatagen):
     """
     def __init__(self, samples,
                  labels=None,
-                 image_size=(256,256),
+                 image_size=(256, 256),
                  seq_type='T1w',
                  datadir='/data',
                  dtype='float32',
@@ -48,22 +48,22 @@ class ImageDatagen(BaseDatagen):
         else:
             self.x_shape = (None, *item[0].shape[1:])
             self.y_shape = (None, self.n_class)
-            
+
     def _convert_2d_dataset(self):
         """Convert case ID to filenames, labels"""
-        new_samples = []
-        if self.labels is None:
-            for case_id in self.samples:
-                files = glob.glob(f'{self.datadir}/{self.mode}/{case_id}/{self.seq_type}/*.dcm')
-                new_samples.extend(files)
-            self.samples = np.array(new_samples)
-        else:
-            new_labels = []
-            for case_id,mgmt in zip(self.samples, self.labels):
-                files = glob.glob(f'{self.datadir}/{self.mode}/{case_id}/{self.seq_type}/*.dcm')
-                new_samples.extend(files)
-                new_labels.extend([mgmt] * len(files))
-            self.samples, self.labels = np.array(new_samples), np.array(new_labels)
+        new_samples, new_labels = [], []
+        is_not_empty_slice = lambda fname: self.get_dcm_arr(fname).any()
+        for i, case_id in enumerate(self.samples):
+            files = glob.glob(
+                f'{self.datadir}/{self.mode}/{case_id}/{self.seq_type}/*.dcm')
+            files = list(filter(is_not_empty_slice, files))
+            new_samples.extend(files)
+            if self.labels is not None:
+                new_labels.extend([self.labels[i]] * len(files))
+
+        if self.labels is not None:
+            self.labels = np.array(new_labels)
+        self.samples = np.array(new_samples)
 
     def to_dataset(self):
         """Convert generator to `tf.data`"""
