@@ -1,10 +1,10 @@
+efficientnet-3D==1.0.1
 imageio==2.9.0
 jupyter
+Keras-Applications==1.0.8
 matplotlib==3.3.2
 nibabel==3.2.1
 pandas==1.1.4
 pydicom==2.1.0
 scikit-image==0.17.2
 scikit-learn==0.23.2
-efficientnet-3D==1.0.1
-Keras-Applications==1.0.8
