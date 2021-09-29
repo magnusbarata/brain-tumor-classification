@@ -1,20 +1,23 @@
 {
-  "name": "2D 512x512 hyperparameter",
+  "name": "Ensemble Learning 256 with aux",
   "seed": 7171,
   "ensemble": true,
   "data": {
-      "modal": "2d",
-      "dirname": "data/orig",
-      "val_size": 0.2,
-      "batch_size": 32,
-      "image_size": [512, 512]
+    "dirname": "data/orig",
+    "val_size": 0.2,
+    "batch_size": 1,
+    "volume_size": [256, 256, 64],
+    "seq_type": "ALL"
   },
-  "model": {"name": "baseline"},
+  "model": {
+    "name": "ensemble_model",
+    "use_aux": true
+  },
   "train": {
     "lr": 1e-4,
-    "decay_steps": 100000,
+    "decay_steps": 1000,
     "decay_rate": 0.96,
     "epoch": 100
   },
-  "desc": "2D Sample hyperparameter file"
+  "desc": "Ensemble learning experiment with 256x256x64 voxel size, with aux out."
 }
