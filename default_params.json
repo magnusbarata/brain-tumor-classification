@@ -1,5 +1,5 @@
 {
-  "name": "Baseline v2 256",
+  "name": "Baseline v2 256-v2",
   "seed": 7171,
   "ensemble": true,
   "data": {
@@ -17,5 +17,5 @@
     "decay_rate": 0.96,
     "epoch": 100
   },
-  "desc": "Baseline V2 ensemble experiment with 256x256x64 voxel size."
+  "desc": "Baseline V2 ensemble experiment with 256x256x64 voxel size, version 2."
 }
