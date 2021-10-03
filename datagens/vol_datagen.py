@@ -5,6 +5,7 @@ import os
 import tensorflow as tf
 import numpy as np
 from skimage.transform import resize
+import volumentations as volaug
 
 from datagens import BaseDatagen
 
@@ -67,6 +68,21 @@ class VolumeDatagen(BaseDatagen):
             return X
         return X, tf.keras.utils.to_categorical(self.labels[b_indices], self.n_class)
 
+    def get_augmentation(self):
+        return volaug.Compose(
+            [
+                volaug.Rotate((-15, 15), (0,0), (0,0), p=0.5),
+                volaug.RandomCropFromBorders(crop_value=0.1, p=0.5),
+                volaug.ElasticTransform((0, 0.25), interpolation=2, p=0.1),
+                volaug.Flip(0, p=0.5),
+                volaug.Flip(1, p=0.5),
+                volaug.Flip(2, p=0.5),
+                volaug.RandomRotate90((1, 2), p=0.5),
+                volaug.GaussianNoise(var_limit=(0, 5), p=0.2),
+                volaug.RandomGamma(gamma_limit=(0.5, 1.5), p=0.2),
+            ], p=1.0
+        )
+
     def load_vol(self, case_id):
         """Loads a volume array from case ID.
         
@@ -79,6 +95,7 @@ class VolumeDatagen(BaseDatagen):
             seq_types = [self.seq_type]
         
         vol = np.empty((*self.volume_size, len(seq_types)))
+        aug = self.get_augmentation()
         for channel, seq_type in enumerate(seq_types):
             vol_dir = f'{self.datadir}/{self.mode}/{case_id}/{seq_type}'
             if os.path.isdir(vol_dir):
@@ -95,4 +112,8 @@ class VolumeDatagen(BaseDatagen):
             vol[:,:,:,channel] = resize(
                 s_vol, self.volume_size, order=1, mode='constant', anti_aliasing=True
             )
+
+            # Augment
+            vol[:,:,:,channel] = aug(image=vol[:,:,:,channel])['image']
+
         return vol.astype(self.dtype)
