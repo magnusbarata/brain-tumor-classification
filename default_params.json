@@ -6,7 +6,7 @@
     "val_size": 0.2,
     "batch_size": 1,
     "volume_size": [256, 256, 64],
-    "seq_type": "FLAIR",
+    "seq_type": "ALL",
     "augmentations": [
       {
         "rotate": {
@@ -19,8 +19,8 @@
     ]
   },
   "model": {
-    "name": "baseline",
-    "use_aux": false
+    "name": "ensemble_model",
+    "use_aux": true
   },
   "train": {
     "lr": 1e-4,
