@@ -41,6 +41,15 @@ def continue_training(dir_path):
     return False
 
 
+def snake_to_camel(string):
+    """Convert snake_case string to CamelCase
+
+    Returns:
+      String: Converted CamelCase string
+    """
+    return ''.join(word.title() for word in string.split('_'))
+
+
 class Hyperparams(dict):
     """Class to load/save hyperparameters from/to a json file.
     

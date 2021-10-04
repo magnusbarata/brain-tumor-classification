@@ -6,6 +6,7 @@ import tensorflow as tf
 import numpy as np
 from skimage.transform import resize
 import volumentations as volaug
+from ..utils import snake_to_camel
 
 from datagens import BaseDatagen
 
@@ -25,7 +26,7 @@ class VolumeDatagen(BaseDatagen):
       dtype: String, data type of the volume.
       augmentations: List of dictionaries. Each dictionary denotes what augmentation to apply
         and the parameters that the augmentation function accepts. For list of accepted 
-        augmentations, please refer to the `Augmentations` enum in datagens/augmentations.py.
+        augmentations, please refer to the repo ZFTurbo/volumentations.
     """
     def __init__(self, samples,
                  labels=None,
@@ -74,17 +75,23 @@ class VolumeDatagen(BaseDatagen):
         return X, tf.keras.utils.to_categorical(self.labels[b_indices], self.n_class)
 
     def get_augmentation(self):
+        """Get augmentation functions.
+
+        Returns:
+          Either:
+            None, if there is no augmentation specified, or
+            composed augmentation functions specified in self.augmentations.
+        """
+        if self.augmentations is None:
+            return None
+
         return volaug.Compose(
             [
-                volaug.Rotate((-15, 15), (0,0), (0,0), p=0.5),
-                volaug.RandomCropFromBorders(crop_value=0.1, p=0.5),
-                volaug.ElasticTransform((0, 0.25), interpolation=2, p=0.1),
-                volaug.Flip(0, p=0.5),
-                volaug.Flip(1, p=0.5),
-                volaug.Flip(2, p=0.5),
-                volaug.RandomRotate90((1, 2), p=0.5),
-                volaug.GaussianNoise(var_limit=(0, 5), p=0.2),
-                volaug.RandomGamma(gamma_limit=(0.5, 1.5), p=0.2),
+                getattr(
+                    volaug, 
+                    snake_to_camel(list(augmentation.keys())[0])
+                )(**list(augmentation.values())[0])
+                for augmentation in self.augmentations
             ], p=1.0
         )
 
@@ -100,8 +107,7 @@ class VolumeDatagen(BaseDatagen):
             seq_types = [self.seq_type]
         
         vol = np.empty((*self.volume_size, len(seq_types)))
-        if self.augmentations:
-            aug = self.get_augmentation()
+        aug = self.get_augmentation()
         for channel, seq_type in enumerate(seq_types):
             vol_dir = f'{self.datadir}/{self.mode}/{case_id}/{seq_type}'
             if os.path.isdir(vol_dir):
@@ -120,7 +126,7 @@ class VolumeDatagen(BaseDatagen):
             )
 
             # Augment
-            if self.augmentations:
+            if aug:
                 vol[:,:,:,channel] = aug(image=vol[:,:,:,channel])['image']
 
         return vol.astype(self.dtype)
