@@ -23,6 +23,9 @@ class VolumeDatagen(BaseDatagen):
         If `ALL`, then all sequence types will be appended into the channel.
       datadir: Root of data directory.
       dtype: String, data type of the volume.
+      augmentations: List of dictionaries. Each dictionary denotes what augmentation to apply
+        and the parameters that the augmentation function accepts. For list of accepted 
+        augmentations, please refer to the `Augmentations` enum in datagens/augmentations.py.
     """
     def __init__(self, samples,
                  labels=None,
@@ -30,6 +33,7 @@ class VolumeDatagen(BaseDatagen):
                  seq_type='T1w',
                  datadir='/data',
                  dtype='float32',
+                 augmentations=None,
                  **kwargs):
         super(VolumeDatagen, self).__init__(samples, **kwargs)
         self.labels = labels
@@ -39,6 +43,7 @@ class VolumeDatagen(BaseDatagen):
         self.seq_type = seq_type
         self.datadir = datadir
         self.dtype = dtype
+        self.augmentations = augmentations
         self._set_shape()
 
     def _set_shape(self):
@@ -95,7 +100,8 @@ class VolumeDatagen(BaseDatagen):
             seq_types = [self.seq_type]
         
         vol = np.empty((*self.volume_size, len(seq_types)))
-        aug = self.get_augmentation()
+        if self.augmentations:
+            aug = self.get_augmentation()
         for channel, seq_type in enumerate(seq_types):
             vol_dir = f'{self.datadir}/{self.mode}/{case_id}/{seq_type}'
             if os.path.isdir(vol_dir):
@@ -114,6 +120,7 @@ class VolumeDatagen(BaseDatagen):
             )
 
             # Augment
-            vol[:,:,:,channel] = aug(image=vol[:,:,:,channel])['image']
+            if self.augmentations:
+                vol[:,:,:,channel] = aug(image=vol[:,:,:,channel])['image']
 
         return vol.astype(self.dtype)

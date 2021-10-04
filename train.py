@@ -42,7 +42,8 @@ def data_prep(params_data, seed):
             batch_size=params_data.batch_size,
             volume_size=params_data.volume_size,
             seq_type=params_data.seq_type,
-            datadir=params_data.dirname
+            datadir=params_data.dirname,
+            augmentations=True
         )
         datagen_val = VolumeDatagen(
             X_val, y_val,
