@@ -132,12 +132,12 @@ class VolumeDatagen(BaseDatagen):
                 s_vol = np.load(f'{vol_dir}.npy')
 
             # Resize volume
-            vol[:,:,:,channel] = resize(
+            s_vol = resize(
                 s_vol, self.volume_size, order=1, mode='constant', anti_aliasing=True
             )
 
             # Augment
-            if aug:
-                vol[:,:,:,channel] = aug(image=vol[:,:,:,channel])['image']
+            if aug: s_vol = aug(image=s_vol)['image']
+            vol[:,:,:,channel] = s_vol
 
         return vol.astype(self.dtype)
