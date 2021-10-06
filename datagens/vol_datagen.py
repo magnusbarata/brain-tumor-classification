@@ -92,10 +92,8 @@ class VolumeDatagen(BaseDatagen):
     def _get_augmentation(self):
         """Get augmentation functions.
 
-        Returns:
-          Either:
-            None, if there is no augmentation specified, or
-            composed augmentation functions specified in self.augmentations.
+        Returns: 
+          `None` if there is no augmentation specified, or composed augmentation functions.
         """
         if self.augmentations is None:
             return None
