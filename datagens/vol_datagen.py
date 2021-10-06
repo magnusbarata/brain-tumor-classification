@@ -89,7 +89,7 @@ class VolumeDatagen(BaseDatagen):
             return X
         return X, tf.keras.utils.to_categorical(self.labels[b_indices], self.n_class)
 
-    def get_augmentation(self):
+    def _get_augmentation(self):
         """Get augmentation functions.
 
         Returns:
