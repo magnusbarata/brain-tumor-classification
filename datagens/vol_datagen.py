@@ -26,8 +26,9 @@ class VolumeDatagen(BaseDatagen):
       dtype: String, data type of the volume.
       augmentations: List of dictionaries. Each dictionary denotes what augmentation to apply
         and the parameters that the augmentation function accepts. For list of accepted 
-        augmentations, please refer to the repo ZFTurbo/volumentations. This variable accepts
-        the structure below (put it as a parameter inside `data`):
+        augmentations, please refer to the repo ZFTurbo/volumentations
+        (https://github.com/ZFTurbo/volumentations#implemented-3d-augmentations). This variable 
+        accepts the structure below (put it as a parameter inside `data`):
         ```
         "augmentations": [
             {
