@@ -5,17 +5,31 @@
     "dirname": "data/orig",
     "val_size": 0.2,
     "batch_size": 1,
-    "volume_size": [256, 256, 64],
+    "volume_size": [
+      256,
+      256,
+      64
+    ],
     "seq_type": "ALL",
     "augmentations": [
-      {
-        "rotate": {
-          "x_limit": [-15, 15],
-          "y_limit": [0, 0],
-          "z_limit": [0, 0],
-          "p": 0.5 
+      [
+        "rotate",
+        {
+          "x_limit": [
+            -15,
+            15
+          ],
+          "y_limit": [
+            0,
+            0
+          ],
+          "z_limit": [
+            0,
+            0
+          ],
+          "p": 0.5
         }
-      }
+      ]
     ]
   },
   "model": {

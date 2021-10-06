@@ -31,13 +31,14 @@ class VolumeDatagen(BaseDatagen):
         accepts the structure below (put it as a parameter inside `data`):
         ```
         "augmentations": [
-            {
-                <func_name_in_snake_case>: {
+            [
+                <func_name_in_snake_case>,
+                {
                     <param_0>: <value_0>,
                     <param_1>: <value_1>,
                     ...
                 }
-            },
+            ],
             ...
         ]
         ```
@@ -100,11 +101,8 @@ class VolumeDatagen(BaseDatagen):
 
         return volaug.Compose(
             [
-                getattr(
-                    volaug, 
-                    snake_to_camel(list(augmentation.keys())[0])
-                )(**list(augmentation.values())[0])
-                for augmentation in self.augmentations
+                getattr(volaug, snake_to_camel(t_name))(**t_params)
+                for t_name, t_params in self.augmentations
             ], p=1.0
         )
 
