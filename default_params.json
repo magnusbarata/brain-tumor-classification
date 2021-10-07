@@ -1,5 +1,5 @@
 {
-  "name": "Ensemble Learning baseline v2 256 with aux",
+  "name": "Ensemble Learning baseline v2 256",
   "seed": 7171,
   "data": {
     "dirname": "data/orig",
@@ -11,7 +11,7 @@
   "model": {
     "name": "ensemble_model",
     "base_model_name": "baseline_v2",
-    "use_aux": true
+    "use_aux": false
   },
   "train": {
     "lr": 1e-4,
@@ -19,5 +19,5 @@
     "decay_rate": 0.96,
     "epoch": 100
   },
-  "desc": "Ensemble learning baseline V2 experiment with 256x256x64 voxel size, with aux out."
+  "desc": "Ensemble learning baseline V2 experiment with 256x256x64 voxel size, without aux out."
 }
