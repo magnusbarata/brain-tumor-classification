@@ -6,7 +6,7 @@ import tensorflow as tf
 import numpy as np
 from skimage.transform import resize
 import volumentations as volaug
-from ..utils import snake_to_camel
+from utils import snake_to_camel
 
 from datagens import BaseDatagen
 
@@ -24,25 +24,10 @@ class VolumeDatagen(BaseDatagen):
         If `ALL`, then all sequence types will be appended into the channel.
       datadir: Root of data directory.
       dtype: String, data type of the volume.
-      augmentations: List of dictionaries. Each dictionary denotes what augmentation to apply
-        and the parameters that the augmentation function accepts. For list of accepted 
-        augmentations, please refer to the repo ZFTurbo/volumentations
-        (https://github.com/ZFTurbo/volumentations#implemented-3d-augmentations). This variable 
-        accepts the structure below (put it as a parameter inside `data`):
-        ```
-        "augmentations": [
-            [
-                <func_name_in_snake_case>,
-                {
-                    <param_0>: <value_0>,
-                    <param_1>: <value_1>,
-                    ...
-                }
-            ],
-            ...
-        ]
-        ```
-        Don't forget to convert the parameters to JSON compatible structure.
+      augmentations: List of tuples. Each tuple denotes what augmentation to apply
+        and the parameters that the augmentation function accepts (e.g. 
+        `(func_name_in_snake_case, transform_params_dict)`. For list of accepted augmentations,
+        please refer to the repo [ZFTurbo/volumentations](https://github.com/ZFTurbo/volumentations#implemented-3d-augmentations).
     """
     def __init__(self, samples,
                  labels=None,
@@ -118,7 +103,7 @@ class VolumeDatagen(BaseDatagen):
             seq_types = [self.seq_type]
         
         vol = np.empty((*self.volume_size, len(seq_types)))
-        aug = self.get_augmentation()
+        aug = self._get_augmentation()
         for channel, seq_type in enumerate(seq_types):
             vol_dir = f'{self.datadir}/{self.mode}/{case_id}/{seq_type}'
             if os.path.isdir(vol_dir):

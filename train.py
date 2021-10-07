@@ -11,6 +11,7 @@ import utils
 keras.backend.clear_session()
 
 def data_prep(params_data, seed):
+    params_data = utils.Hyperparams(params_data)
     df = pd.read_csv(
         f'{params_data.datadir}/train_labels.csv',
         dtype={'BraTS21ID': str}
@@ -23,25 +24,18 @@ def data_prep(params_data, seed):
 
     if params_data.image_size is not None:
         datagen_tr = ImageDatagen(
-            X_tr, y_tr,
-            **params_data,
-            augmentations=None
+            X_tr, y_tr, **params_data
         )
         datagen_val = ImageDatagen(
-            X_val, y_val,
-            **params_data,
-            augmentations=None
+            X_val, y_val, **params_data
         )
     else:
         datagen_tr = VolumeDatagen(
-            X_tr, y_tr,
-            **params_data,
-            augmentations=params_data.augmentations
+            X_tr, y_tr, **params_data
         )
+        params_data.augmentations = None
         datagen_val = VolumeDatagen(
-            X_val, y_val,
-            **params_data,
-            augmentations=None
+            X_val, y_val, **params_data
         )
 
     return datagen_tr, datagen_val
