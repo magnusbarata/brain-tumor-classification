@@ -30,7 +30,8 @@ class BaseDatagen(keras.utils.Sequence):
     def __init__(self, samples,
                  batch_size=32,
                  shuffle=True,
-                 drop_remainder=False):
+                 drop_remainder=False,
+                 **kwargs):
         self.samples = samples
         self.batch_size = batch_size
         self.shuffle = shuffle

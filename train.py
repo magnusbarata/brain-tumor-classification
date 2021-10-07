@@ -11,8 +11,9 @@ import utils
 keras.backend.clear_session()
 
 def data_prep(params_data, seed):
+    params_data = utils.Hyperparams(params_data)
     df = pd.read_csv(
-        f'{params_data.dirname}/train_labels.csv',
+        f'{params_data.datadir}/train_labels.csv',
         dtype={'BraTS21ID': str}
     )
     df = df.set_index('BraTS21ID').drop(['00109', '00123', '00709'])
@@ -21,35 +22,20 @@ def data_prep(params_data, seed):
         X, y, stratify=y, test_size=params_data.val_size, random_state=seed
     )
 
-    if params_data.modal == '2d':      
+    if params_data.image_size is not None:
         datagen_tr = ImageDatagen(
-            X_tr, y_tr,
-            batch_size=params_data.batch_size,
-            image_size=params_data.image_size,
-            seq_type=params_data.seq_type,
-            datadir=params_data.dirname
+            X_tr, y_tr, **params_data
         )
         datagen_val = ImageDatagen(
-            X_val, y_val,
-            batch_size=params_data.batch_size,
-            image_size=params_data.image_size,
-            seq_type=params_data.seq_type,
-            datadir=params_data.dirname
+            X_val, y_val, **params_data
         )
     else:
         datagen_tr = VolumeDatagen(
-            X_tr, y_tr,
-            batch_size=params_data.batch_size,
-            volume_size=params_data.volume_size,
-            seq_type=params_data.seq_type,
-            datadir=params_data.dirname
+            X_tr, y_tr, **params_data
         )
+        params_data.augmentations = None
         datagen_val = VolumeDatagen(
-            X_val, y_val,
-            batch_size=params_data.batch_size,
-            volume_size=params_data.volume_size,
-            seq_type=params_data.seq_type,
-            datadir=params_data.dirname
+            X_val, y_val, **params_data
         )
 
     return datagen_tr, datagen_val
