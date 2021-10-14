@@ -34,7 +34,7 @@ class VolumeDatagen(BaseDatagen):
         self.labels = labels
         self.n_class = 0 if labels is None else len(np.unique(labels))
         self.mode = 'test' if labels is None else 'train'
-        self.volume_size = volume_size
+        self.volume_size = tuple(volume_size)
         self.seq_type = seq_type
         self.datadir = datadir
         self.dtype = dtype
@@ -80,19 +80,22 @@ class VolumeDatagen(BaseDatagen):
         
         vol = np.empty((*self.volume_size, len(seq_types)))
         for channel, seq_type in enumerate(seq_types):
-            vol_dir = f'{self.datadir}/{self.mode}/{case_id}/{seq_type}'
-            if os.path.isdir(vol_dir):
+            vol_path = f'{self.datadir}/{self.mode}/{case_id}/{seq_type}'
+            if os.path.isdir(vol_path):
                 # Stacking slices depthwise
                 files = sorted(
-                    glob.glob(f'{vol_dir}/*.dcm'),
+                    glob.glob(f'{vol_path}/*.dcm'),
                     key=lambda path: int(re.sub('\D', '', os.path.basename(path)))
                 )
                 s_vol = np.stack([self.get_dcm_arr(f) for f in files], axis=-1)
+            elif os.path.exists(f'{vol_path}.nii.gz'):
+                s_vol = self.get_nii_arr(f'{vol_path}.nii.gz')
             else:
-                s_vol = np.load(f'{vol_dir}.npy')
+                s_vol = np.load(f'{vol_path}.npy')
 
             # Resize volume
-            vol[:,:,:,channel] = resize(
-                s_vol, self.volume_size, order=1, mode='constant', anti_aliasing=True
-            )
+            if s_vol.shape != self.volume_size:
+                vol[:,:,:,channel] = resize(
+                    s_vol, self.volume_size, order=1, mode='constant', anti_aliasing=True
+                )
         return vol.astype(self.dtype)

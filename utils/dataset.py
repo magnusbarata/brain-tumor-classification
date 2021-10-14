@@ -11,6 +11,7 @@ def get_first_dcm(dcm_dir):
         key=lambda path: int(re.sub('\D', '', os.path.basename(path)))
     )[0]
 
+
 def captk_preproc(datadir, captk_dir='CaPTk/CaPTk/1.8.1', out_dir='data/captk-reg'):
     """Apply [CaPTk BraTS Pre-processing Pipeline](https://cbica.github.io/CaPTk/preprocessing_brats.html)
     to a dataset.
