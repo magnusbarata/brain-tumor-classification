@@ -1,23 +1,19 @@
 {
-  "name": "Ensemble Learning 256 with aux",
+  "name": "Baseline with captk-reg dataset",
   "seed": 7171,
   "ensemble": true,
   "data": {
-    "dirname": "data/orig",
+    "dirname": "data/captk-reg",
     "val_size": 0.2,
-    "batch_size": 1,
-    "volume_size": [256, 256, 64],
-    "seq_type": "ALL"
+    "batch_size": 2,
+    "volume_size": [240, 240, 155]
   },
-  "model": {
-    "name": "ensemble_model",
-    "use_aux": true
-  },
+  "model": {"name": "baseline"},
   "train": {
     "lr": 1e-4,
-    "decay_steps": 1000,
+    "decay_steps": 100000,
     "decay_rate": 0.96,
     "epoch": 100
   },
-  "desc": "Ensemble learning experiment with 256x256x64 voxel size, with aux out."
+  "desc": "Baseline with captk-reg dataset (240x240x155 sized voxel)."
 }
