@@ -10,3 +10,4 @@ def find_model(model_name):
 # Import exposed model functions
 from models.baseline import baseline
 from models.ensemble import ensemble_model
+from models.multi_channel import multi_channel
